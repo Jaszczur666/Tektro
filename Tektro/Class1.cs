@@ -2,17 +2,29 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Globalization;
+using System.Threading;
 using System.Text;
 
 namespace Tektro
 {
-    public class punkt {
+    public class punkt
+    {
         public double x;
         public double y;
         public punkt()
         {
             x = 0;
             y = 0;
+        }
+    }
+    public class curve
+    {
+        public List<punkt> decay;
+        public double exc;
+        public curve()
+        {
+            decay = new List<punkt>();
+            exc = 0;
         }
     }
     public class Scope
@@ -59,6 +71,15 @@ namespace Tektro
             if (initialized) state = TVA.Write(data);
             return state;
         }
+        public void resetAcquisition() {
+            if (initialized) {
+                //TVA.Write("ACQ:STATE OFF");
+                TVA.Write("ACQuire:NUMAVg 8");
+                Thread.Sleep(10);
+                TVA.Write("ACQuire:NUMAVg 64");
+
+            };
+        }
         public void dumpAscii(out string response)
         {
             double xincr, ymult, yzero, yoff, xpos, xdel;
@@ -99,30 +120,42 @@ namespace Tektro
             Console.WriteLine(response);
             xpos = double.Parse(response, CultureInfo.InvariantCulture);
             xdel = xpos * xincr * rawwave.Count() / 100;
+            response = "";
             for (int j = 0; j < wave.Count(); j++)
             {
                 double timepoint = j * xincr - xdel;
-                response += timepoint.ToString(CultureInfo.InvariantCulture) + " " + wave[j].ToString(CultureInfo.InvariantCulture);
+                response += timepoint.ToString() + " " + wave[j].ToString() + "\r\n";
+            }
+            //Console.WriteLine("ASCII Dumped ");
+
         }
-
-
-    }
-        public void dumpList(out List<punkt> curve)
+        public void dumpList(out curve decaycurve) 
         {
             string res;
-            curve = new List<punkt>();
+            decaycurve = new curve();
             dumpAscii(out res);
-            if (!res.Contains("invalid"))
+            //Console.WriteLine("Huge load of data hopefully follows");
+            //Console.WriteLine("___________________________________");
+            //Console.WriteLine(res);
+            //Console.WriteLine("___________________________________");
+            //res = System.IO.File.ReadAllText("log.txt");
+            var result = System.Text.RegularExpressions.Regex.Split(res, "\r\n|\r|\n");
+            
+            foreach (string line in result)
             {
-                var result = System.Text.RegularExpressions.Regex.Split(res, "\r\n|\r|\n");
-                foreach (string line in result){
-                    punkt point=new punkt();
-                    var sub= System.Text.RegularExpressions.Regex.Split(res, " ");
+                
+                //Console.WriteLine(line);
+                if (line != "")
+                {
+                    punkt point = new punkt();
+                    var sub = System.Text.RegularExpressions.Regex.Split(line, " ");
                     point.x = double.Parse(sub[0]);
                     point.y = double.Parse(sub[1]);
-                    curve.Add(point);
-
+                    //Console.WriteLine(sub[0] + ":" + sub[1]);
+                    //Console.WriteLine(point.x + " " + point.y);
+                    decaycurve.decay.Add(point);
                 }
+                
             }
         }
         public void Close()
@@ -131,5 +164,5 @@ namespace Tektro
             TVA.Close();
 
         }
-}
+    }
 };
