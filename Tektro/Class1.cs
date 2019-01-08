@@ -7,6 +7,7 @@ using System.Text;
 
 namespace Tektro
 {
+
     public class punkt
     {
         public double x;
@@ -29,6 +30,8 @@ namespace Tektro
     }
     public class Scope
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         private TekVISANet.VISA TVA;
         private bool initialized;
         public Scope()
@@ -42,19 +45,19 @@ namespace Tektro
             string response;
             bool status;
             TVA.FindResources("?*", out instrlist);
-            Console.WriteLine("Visa Resources");
+            log.Info("Visa Resources");
             for (int j = 0; j < instrlist.Count; j++)
             {
-                Console.WriteLine(j.ToString() + " : " + instrlist[j]);
+                log.Info(j.ToString() + " : " + instrlist[j]);
             }
-            Console.WriteLine("\n");
+            //Console.WriteLine("\n");
             // Connect to a known instrument and print its IDN
             TVA.Open("USB::0x0699::0x0453::C021155::INSTR");
             TVA.Write("*IDN?");
             status = TVA.Read(out response);
             if (status)
             {
-                Console.WriteLine(response);
+                log.Info("*IDN? query response " + response);
                 initialized = true;
             }
         }
@@ -90,16 +93,16 @@ namespace Tektro
             TVA.Write("DATA:WIDTH 2");
             TVA.Write("DATA:ENC ASC");
             TVA.Query("WFMPRE:YMULT?", out response);
-            Console.WriteLine(response);
+            log.Debug("WFMPRE:YMUL " +response);
             ymult = float.Parse(response, CultureInfo.InvariantCulture);
             TVA.Query("WFMPRE:YZERO?", out response);
-            Console.WriteLine(response, CultureInfo.InvariantCulture);
+            log.Debug("WFMPRE:YZERO " + response.ToString(CultureInfo.InstalledUICulture));
             yzero = float.Parse(response, CultureInfo.InvariantCulture);
             TVA.Query("WFMPRE:YOFF?", out response);
-            Console.WriteLine(response);
+            log.Debug("WFMPRE:YOFF "+response);
             yoff = float.Parse(response, CultureInfo.InvariantCulture);
             TVA.Query("WFMPRE:XINCR?", out response);
-            Console.WriteLine(response);
+            log.Debug("WFMPRE:XINCR " + response);
             xincr = float.Parse(response, CultureInfo.InvariantCulture);
             TVA.Query("CURVE?", out response);
             List<int> TagIds = response.Split(',').Select(int.Parse).ToList();
@@ -117,7 +120,7 @@ namespace Tektro
 
             }
             TVA.Query("HOR:POS?", out response);
-            Console.WriteLine(response);
+            log.Debug("HOR:POS "+response);
             xpos = double.Parse(response, CultureInfo.InvariantCulture);
             xdel = xpos * xincr * rawwave.Count() / 100;
             response = "";
