@@ -7,10 +7,7 @@ using System.Text;
 
 namespace Tektro
 {
-<<<<<<< HEAD:Tektro/Tektro.cs
-=======
 
->>>>>>> f5ee72e6fbc37f7650202fd33966ab875433d868:Tektro/Class1.cs
     public class punkt
     {
         public double x;
@@ -23,7 +20,7 @@ namespace Tektro
         public punkt(double xval, double yval) { x = xval;y = yval; }
     }
     public class curve
-<<<<<<< HEAD:Tektro/Tektro.cs
+
     {
         public List<punkt> decay;
         public double exc;
@@ -36,8 +33,6 @@ namespace Tektro
     public class Scope: IDisposable
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-=======
-    {
         public List<punkt> decay;
         public double exc;
         public curve()
@@ -50,7 +45,7 @@ namespace Tektro
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
->>>>>>> f5ee72e6fbc37f7650202fd33966ab875433d868:Tektro/Class1.cs
+
         private TekVISANet.VISA TVA;
         private bool initialized;
         public Scope()
@@ -67,10 +62,7 @@ namespace Tektro
             log.Info("Visa Resources");
             for (int j = 0; j < instrlist.Count; j++)
             {
-<<<<<<< HEAD:Tektro/Tektro.cs
-                //Console.WriteLine(j.ToString() + " : " + instrlist[j]);
-=======
->>>>>>> f5ee72e6fbc37f7650202fd33966ab875433d868:Tektro/Class1.cs
+
                 log.Info(j.ToString() + " : " + instrlist[j]);
             }
             //Console.WriteLine("\n");
@@ -80,12 +72,11 @@ namespace Tektro
             status = TVA.Read(out response);
             if (status)
             {
-<<<<<<< HEAD:Tektro/Tektro.cs
+
                 
                 log.Info(response);
-=======
+
                 log.Info("*IDN? query response " + response);
->>>>>>> f5ee72e6fbc37f7650202fd33966ab875433d868:Tektro/Class1.cs
                 initialized = true;
             }
         }
@@ -121,7 +112,6 @@ namespace Tektro
             TVA.Write("DATA:WIDTH 2");
             TVA.Write("DATA:ENC ASC");
             TVA.Query("WFMPRE:YMULT?", out response);
-<<<<<<< HEAD:Tektro/Tektro.cs
             log.Info("ymult = "+response);
             ymult = float.Parse(response, CultureInfo.InvariantCulture);
             TVA.Query("WFMPRE:YZERO?", out response);
@@ -135,7 +125,6 @@ namespace Tektro
             TVA.Query("WFMPRE:XINCR?", out response);
             //Console.WriteLine(response);
             log.Info("x increment = " + response);
-=======
             log.Debug("WFMPRE:YMUL " +response);
             ymult = float.Parse(response, CultureInfo.InvariantCulture);
             TVA.Query("WFMPRE:YZERO?", out response);
@@ -146,7 +135,6 @@ namespace Tektro
             yoff = float.Parse(response, CultureInfo.InvariantCulture);
             TVA.Query("WFMPRE:XINCR?", out response);
             log.Debug("WFMPRE:XINCR " + response);
->>>>>>> f5ee72e6fbc37f7650202fd33966ab875433d868:Tektro/Class1.cs
             xincr = float.Parse(response, CultureInfo.InvariantCulture);
             TVA.Query("CURVE?", out response);
             List<int> TagIds = response.Split(',').Select(int.Parse).ToList();
@@ -164,12 +152,9 @@ namespace Tektro
 
             }
             TVA.Query("HOR:POS?", out response);
-<<<<<<< HEAD:Tektro/Tektro.cs
             //Console.WriteLine(response);
             log.Info("Horizontal position = "+response);
-=======
             log.Debug("HOR:POS "+response);
->>>>>>> f5ee72e6fbc37f7650202fd33966ab875433d868:Tektro/Class1.cs
             xpos = double.Parse(response, CultureInfo.InvariantCulture);
             xdel = xpos * xincr * rawwave.Count() / 100;
             response = "";
@@ -216,7 +201,6 @@ namespace Tektro
             TVA.Close();
 
         }
-<<<<<<< HEAD:Tektro/Tektro.cs
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
@@ -232,7 +216,6 @@ namespace Tektro
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-=======
->>>>>>> f5ee72e6fbc37f7650202fd33966ab875433d868:Tektro/Class1.cs
+
     }
 };
