@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Globalization;
 using System.Threading;
-using System.Text;
 
 namespace Tektro
 {
@@ -35,17 +34,6 @@ namespace Tektro
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public List<punkt> decay;
         public double exc;
-        public curve()
-        {
-            decay = new List<punkt>();
-            exc = 0;
-        }
-    }
-    public class Scope
-    {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-
         private TekVISANet.VISA TVA;
         private bool initialized;
         public Scope()
